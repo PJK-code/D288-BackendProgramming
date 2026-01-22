@@ -1,3 +1,4 @@
+/* added this in during part B commit but fulfills part C */
 package com.example.demo.config;
 
 import com.example.demo.entities.*;
