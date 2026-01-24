@@ -12,41 +12,44 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "vacations")
+@Table(name = "carts")
 @Getter
 @Setter
-public class Vacation {
+public class Cart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "vacation_id")
-    private Long id;
+    @Column(name = "cart_id")
+    private Long cartId;
+
+    @Column(name = "package_price")
+    private BigDecimal package_price;
+
+    @Column(name = "party_size")
+    private Integer party_size;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private StatusType status;
+
+    @Column(name = "order_tracking_number")
+    private String orderTrackingNumber;
 
     @Column(name = "create_date")
     @CreationTimestamp
     private LocalDateTime create_date;
 
-    @Column(name = "description")
-    private String description;
-
-    @Column(name = "image_url")
-    private String image_URL;
-
     @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime last_update;
 
-    @Column(name = "travel_fare_price")
-    private BigDecimal travel_price;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
-    @Column(name = "vacation_title")
-    private String vacation_title;
-
-    //need to @OneToMany's
-
-    @OneToMany(mappedBy = "vacation")
+    @OneToMany(mappedBy = "cart")
     private Set<CartItem> cartItems = new HashSet<>();
 
-    @OneToMany(mappedBy = "vacation")
-    private Set<Excursion> excursions = new HashSet<>();
 }
+
+

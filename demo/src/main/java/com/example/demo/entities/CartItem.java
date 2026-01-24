@@ -6,47 +6,43 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "vacations")
+@Table(name = "cart_items")
 @Getter
 @Setter
-public class Vacation {
+public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "vacation_id")
-    private Long id;
+    @Column(name = "cart_item_id")
+    private Long cartItemId;
 
     @Column(name = "create_date")
     @CreationTimestamp
     private LocalDateTime create_date;
 
-    @Column(name = "description")
-    private String description;
-
-    @Column(name = "image_url")
-    private String image_URL;
-
     @Column(name = "last_update")
     @UpdateTimestamp
     private LocalDateTime last_update;
 
-    @Column(name = "travel_fare_price")
-    private BigDecimal travel_price;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vacation_id", nullable = false)
+    private Vacation vacation;
 
-    @Column(name = "vacation_title")
-    private String vacation_title;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
+    private Cart cart;
 
-    //need to @OneToMany's
-
-    @OneToMany(mappedBy = "vacation")
-    private Set<CartItem> cartItems = new HashSet<>();
-
-    @OneToMany(mappedBy = "vacation")
+    @ManyToMany
+    @JoinTable(
+            name = "excursion_cartitem",
+            joinColumns = @JoinColumn(name = "cart_item_id"),
+            inverseJoinColumns = @JoinColumn(name = "excursion_id")
+    )
     private Set<Excursion> excursions = new HashSet<>();
+
 }
