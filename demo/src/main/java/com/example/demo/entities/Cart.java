@@ -47,9 +47,20 @@ public class Cart {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private Set<CartItem> cartItems = new HashSet<>();
 
+    public void add(CartItem cartItem) {
+        if (cartItem != null) {
+            if (cartItems == null) {
+                cartItems = new HashSet<>();
+            }
+            cartItems.add(cartItem);
+            cartItem.setCart(this);
+        }
+    }
+
 }
+
 
 
