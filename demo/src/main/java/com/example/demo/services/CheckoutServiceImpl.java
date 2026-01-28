@@ -31,6 +31,12 @@ public class CheckoutServiceImpl implements CheckoutService{
         Cart cart = purchase.getCart();
         Customer customer = purchase.getCustomer();
 
+        if (cart == null || cart.getCartItems().isEmpty()) {
+
+            //return error message
+            return new PurchaseResponse("Error: Cart is empty");
+        }
+
         //set cart status to 'ordered'
         cart.setStatus(StatusType.ordered);
 
