@@ -6,6 +6,7 @@ import com.example.demo.entities.Cart;
 import com.example.demo.entities.CartItem;
 import com.example.demo.entities.Customer;
 import com.example.demo.entities.StatusType;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,39 +26,36 @@ public class CheckoutServiceImpl implements CheckoutService{
     }
 
     @Override
+    @Transactional
     public PurchaseResponse placeOrder(Purchase purchase) {
 
         // retrieve the order info from dto
         Cart cart = purchase.getCart();
         Customer customer = purchase.getCustomer();
 
-        if (cart == null || cart.getCartItems().isEmpty()) {
-
-            //return error message
-            return new PurchaseResponse("Error: Cart is empty");
-        }
-
-        //set cart status to 'ordered'
-        cart.setStatus(StatusType.ordered);
-
         //generate tracking number
         String orderTrackingNumber = generateOrderTrackingNumber();
         cart.setOrderTrackingNumber(orderTrackingNumber);
 
-        //populate order with orderItems
+        //populate cart with cart items
         Set<CartItem> cartItems = purchase.getCartItems();
         cartItems.forEach(item -> cart.add(item));
 
         // populate customer with order
         customer.add(cart);
 
+        //set cart status to 'ordered'
+        cart.setStatus(StatusType.ordered);
+
         //save to the database
         customerRepository.save(customer);
 
-        //return a response
-
-        return new PurchaseResponse(orderTrackingNumber);
-
+        //return success response with tracking number
+        if (cart == null || cart.getCartItems() == null || cart.getCartItems().isEmpty()) {
+            return new PurchaseResponse("Error: cart can't be empty");
+        } else {
+            return new PurchaseResponse(orderTrackingNumber);
+        }
     }
 
     private String generateOrderTrackingNumber() {
@@ -67,3 +65,28 @@ public class CheckoutServiceImpl implements CheckoutService{
 
     }
 }
+
+//validation code that I couldn't get to work and I might come back to
+// DEBUG
+        /*System.out.println("Cart: " + cart);
+        System.out.println("Cart items from cart: " + (cart != null ? cart.getCartItems() : "cart is null"));
+        if (cart != null && cart.getCartItems() != null) {
+            System.out.println("Number of cart items: " + cart.getCartItems().size());
+            for (CartItem item : cart.getCartItems()) {
+                System.out.println("  Cart item: " + item);
+                System.out.println("  Has vacation: " + (item.getVacation() != null));
+            }
+        }
+
+        // Check if cart or cartItems is empty
+        if (cart == null || cart.getCartItems() == null || cart.getCartItems().isEmpty()) {
+            return new PurchaseResponse("Error: Cart is empty");
+        }
+
+        // Check if the first cart item has a vacation
+        CartItem firstItem = cart.getCartItems().iterator().next();
+        if (firstItem.getVacation() == null) {
+            return new PurchaseResponse("Error: Cart is empty");
+        }*/
+
+

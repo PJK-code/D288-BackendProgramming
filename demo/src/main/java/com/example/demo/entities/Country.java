@@ -21,7 +21,7 @@ public class Country {
     @Column(name = "country_id")
     private Long id;
 
-    @Column(name = "country_name")
+    @Column(name = "country")
     private String country_name;
 
     @Column(name = "create_date")
