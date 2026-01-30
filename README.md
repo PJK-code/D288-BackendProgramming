@@ -4,6 +4,8 @@ My name is Preston Kent and I'm a Software Engineering student at WGU.
 
 This is a project that I finished for my Backend Programming class that focused on creating a Spring Boot backend in IntelliJ, then connecting it to an Angualar frontend and a mySQL database.
 
+I have a created repo for my frontend and have included the mySQL file in the resources folder of this project called create_and_populate_db. Which for the project I then ran the script in mySQL workbench.
+
 Listed below are the project requirements that I had to fulfill for completion:
 
 
